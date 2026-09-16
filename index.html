@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STARK INDUSTRIES // ARC ACCESS TERMINAL // MARK LXXXV</title>
+
+<!-- High-Tech Sci-Fi Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-dark:       #05070B;
+    --bg-panel:      rgba(13, 17, 26, 0.82);
+    --panel-border:  rgba(255, 215, 0, 0.25);
+    
+    /* Iron Man Color Palette */
+    --stark-red:     #E62429;
+    --stark-red-glow:#FF3B3F;
+    --stark-red-dark:#4A080A;
+    --stark-gold:    #FFD700;
+    --stark-gold-dim:#B39700;
+    --arc-cyan:      #00F0FF;
+    --arc-cyan-glow: #80FFFF;
+    --arc-blue-dark: #003847;
+    
+    --text-main:     #F0F4F8;
+    --text-muted:    #7A8B9E;
+    --text-gold:     #FFE169;
+    --danger:        #FF1A1A;
+    --success:       #00FF66;
+
+    --font-heading:  'Orbitron', sans-serif;
+    --font-body:     'Rajdhani', sans-serif;
+    --font-code:     'Share Tech Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    overflow: hidden;
+    perspective: 1200px;
+  }
+
+  /* ---------- STARK GRID & CARBON BACKGROUND ---------- */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 65%),
+      linear-gradient(rgba(230, 36, 41, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(230, 36, 41, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hex-overlay {
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.06) 0%, transparent 70%),
+      repeating-linear-gradient(60deg, rgba(0,0,0,0.3) 0, rgba(0,0,0,0.3) 2px, transparent 2px, transparent 8px);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Scanline effect */
+  .scanline {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 240, 255, 0.03) 51%, transparent 51%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Ambient Particle Canvas */
+  #particleCanvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* ---------- MAIN CONTAINER LAYOUT ---------- */
+  .app-container {
+    position: relative;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 64px 1fr 40px;
+    gap: 12px;
+    padding: 12px 18px;
+  }
+
+  /* ---------- TOP TELEMETRY BAR ---------- */
+  header.stark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, rgba(74, 8, 10, 0.75), rgba(13, 17, 26, 0.9), rgba(0, 56, 71, 0.75));
+    border: 1px solid var(--stark-gold);
+    border-bottom: 2px solid var(--stark-red);
+    padding: 0 20px;
+    clip-path: polygon(0 0, 100% 0, 98% 100%, 2% 100%);
+    box-shadow: 0 0 25px rgba(230, 36, 41, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.15);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+    position: relative;
+  }
+
+  .brand-logo svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px var(--arc-cyan));
+    animation: rotateLogo 20s linear infinite;
+  }
+  @keyframes rotateLogo {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .brand-text h1 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: var(--stark-gold);
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  }
+
+  .brand-text span {
+    font-family: var(--font-code);
+    font-size: 0.7rem;
+    color: var(--arc-cyan);
+    letter-spacing: 2px;
+  }
+
+  .header-telemetry {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .tele-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  .tele-item .val {
+    color: var(--arc-cyan);
+    font-weight: bold;
+    text-shadow: 0 0 6px var(--arc-cyan);
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+    animation: blink 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-stark {
+    background: linear-gradient(135deg, rgba(230, 36, 41, 0.3), rgba(74, 8, 10, 0.6));
+    border: 1px solid var(--stark-gold);
+    color: var(--stark-gold);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    padding: 8px 16px;
+    cursor: pointer;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-stark:hover {
+    background: linear-gradient(135deg, rgba(230, 36, 41, 0.7), rgba(255, 215, 0, 0.4));
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    color: #FFF;
+    transform: translateY(-1px);
+  }
+
+  .btn-stark:active {
+    transform: translateY(1px);
+  }
+
+  .btn-stark.active {
+    background: var(--stark-gold);
+    color: var(--bg-dark);
+    font-weight: bold;
+    box-shadow: 0 0 15px var(--stark-gold);
+  }
+
+  /* ---------- MAIN BODY DASHBOARD ---------- */
+  main.stark-viewport {
+    display: grid;
+    grid-template-columns: 340px 1fr 340px;
+    gap: 16px;
+    min-height: 0;
+  }
+
+  @media (max-width: 1200px) {
+    main.stark-viewport {
+      grid-template-columns: 300px 1fr 300px;
+    }
+  }
+
+  /* Tactical Panel Box Styling */
+  .panel-box {
+    background: var(--bg-panel);
+    border: 1px solid var(--panel-border);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 240, 255, 0.05);
+  }
+
+  /* Corner Tactical Accents */
+  .panel-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 14px; height: 14px;
+    border-top: 2px solid var(--stark-gold);
+    border-left: 2px solid var(--stark-gold);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .panel-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0; width: 14px; height: 14px;
+    border-bottom: 2px solid var(--stark-red);
+    border-right: 2px solid var(--stark-red);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .panel-header {
+    background: linear-gradient(90deg, rgba(230, 36, 41, 0.25), rgba(0, 0, 0, 0.4));
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: var(--stark-gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+  }
+
+  .panel-body {
+    padding: 14px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .panel-body::-webkit-scrollbar { width: 4px; }
+  .panel-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--stark-gold-dim); border-radius: 2px; }
+
+  /* ---------- LEFT PANEL: SUIT TELEMETRY & VAULT ---------- */
+  .suit-card-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .suit-btn {
+    background: rgba(10, 14, 22, 0.8);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .suit-btn:hover, .suit-btn.active {
+    border-color: var(--stark-gold);
+    background: linear-gradient(135deg, rgba(230, 36, 41, 0.25), rgba(0, 240, 255, 0.15));
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+  }
+
+  .suit-btn.active::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0; width: 3px;
+    background: var(--stark-gold);
+    box-shadow: 0 0 8px var(--stark-gold);
+  }
+
+  .suit-btn .suit-tag {
+    font-family: var(--font-code);
+    font-size: 0.65rem;
+    color: var(--arc-cyan);
+    letter-spacing: 1px;
+  }
+
+  .suit-btn .suit-name {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    color: var(--text-main);
+    font-weight: 700;
+  }
+
+  .suit-spec-display {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .spec-bar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .spec-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .spec-label span.val { color: var(--stark-gold); font-weight: bold; }
+
+  .progress-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+    border-radius: 1px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--stark-red), var(--stark-gold));
+    box-shadow: 0 0 10px var(--stark-gold);
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .suit-wireframe-container {
+    height: 180px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #suitCanvas { width: 100%; height: 100%; }
+
+  /* ---------- CENTER STAGE: ARC REACTOR CORE & AUTHENTICATION ---------- */
+  .center-stage {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 16px;
+  }
+
+  .arc-core-view {
+    background: radial-gradient(circle at 50% 50%, rgba(13, 24, 38, 0.9), rgba(5, 7, 11, 0.95));
+    border: 1px solid var(--stark-gold-dim);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 40px rgba(0, 240, 255, 0.15) inset;
+    overflow: hidden;
+  }
+
+  /* Target HUD Overlay Graphics */
+  .hud-reticle {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hud-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px dashed rgba(0, 240, 255, 0.25);
+    animation: rotateClockwise 30s linear infinite;
+  }
+  .hud-circle.c1 { width: 380px; height: 380px; border-color: rgba(255, 215, 0, 0.2); }
+  .hud-circle.c2 { width: 290px; height: 290px; border: 1px solid rgba(230, 36, 41, 0.3); border-style: dotted; animation-direction: reverse; animation-duration: 20s; }
+  .hud-circle.c3 { width: 180px; height: 180px; border: 2px solid rgba(0, 240, 255, 0.4); }
+
+  @keyframes rotateClockwise {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  #arcReactorCanvas {
+    width: 340px;
+    height: 340px;
+    z-index: 5;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  #arcReactorCanvas:hover { transform: scale(1.04); }
+
+  .arc-status-badge {
+    position: absolute;
+    bottom: 16px;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--arc-cyan);
+    letter-spacing: 3px;
+    text-shadow: 0 0 10px var(--arc-cyan);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 18px;
+    border: 1px solid var(--arc-cyan);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+
+  /* Biometric Login Section */
+  .auth-control-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--stark-gold);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 96% 100%, 0 100%);
+  }
+
+  /* Palm Scanner Interface */
+  .palm-scanner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    padding: 16px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .palm-scanner-box:hover {
+    border-color: var(--stark-gold);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+  }
+
+  .palm-icon { width: 80px; height: 90px; position: relative; }
+  .palm-icon svg {
+    width: 100%; height: 100%; fill: none; stroke: var(--arc-cyan); stroke-width: 2;
+    filter: drop-shadow(0 0 6px var(--arc-cyan)); transition: all 0.3s ease;
+  }
+
+  .laser-beam {
+    position: absolute; left: 0; right: 0; height: 3px;
+    background: var(--stark-red); box-shadow: 0 0 12px var(--stark-red-glow);
+    top: 0%; opacity: 0; pointer-events: none;
+  }
+
+  .scanning .laser-beam {
+    opacity: 1; animation: scanMove 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes scanMove { 0% { top: 5%; } 100% { top: 95%; } }
+
+  .scanner-hint {
+    font-family: var(--font-code); font-size: 0.72rem; color: var(--stark-gold);
+    margin-top: 10px; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* Keycode Access Terminal */
+  .keypad-terminal { display: flex; flex-direction: column; gap: 10px; }
+  .passcode-display {
+    background: #000; border: 1px solid var(--stark-gold-dim); padding: 10px;
+    font-family: var(--font-code); font-size: 1.2rem; color: var(--stark-gold);
+    letter-spacing: 6px; text-align: center; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2) inset;
+    min-height: 44px; display: flex; align-items: center; justify-content: center;
+  }
+
+  .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .key-btn {
+    background: rgba(20, 28, 40, 0.9); border: 1px solid rgba(255, 215, 0, 0.2);
+    color: var(--text-main); font-family: var(--font-heading); font-size: 0.95rem;
+    padding: 10px; cursor: pointer; transition: all 0.15s ease;
+  }
+  .key-btn:hover {
+    background: var(--stark-red); color: #FFF; border-color: var(--stark-gold);
+    box-shadow: 0 0 12px var(--stark-red-glow);
+  }
+  .key-btn:active { transform: scale(0.94); }
+
+  /* ---------- RIGHT PANEL: J.A.R.V.I.S. CONSOLE & DEFENSE MATRIX ---------- */
+  .radar-container {
+    height: 160px; background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 240, 255, 0.2); position: relative;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+
+  #radarCanvas { width: 100%; height: 100%; }
+
+  .jarvis-log-box {
+    background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(0, 240, 255, 0.2);
+    height: 140px; padding: 10px; font-family: var(--font-code); font-size: 0.72rem;
+    color: var(--arc-cyan); overflow-y: auto; display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .jarvis-log-box .log-entry { line-height: 1.3; }
+  .jarvis-log-box .sys { color: var(--stark-gold); }
+  .jarvis-log-box .warn { color: var(--stark-red); }
+  .jarvis-log-box .jarvis { color: var(--arc-cyan-glow); }
+
+  .command-row { display: flex; gap: 6px; }
+  .cmd-input {
+    flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 215, 0, 0.3);
+    color: var(--stark-gold); font-family: var(--font-code); font-size: 0.8rem;
+    padding: 8px 12px; outline: none;
+  }
+  .cmd-input:focus { border-color: var(--arc-cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+
+  .protocol-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .protocol-btn {
+    background: rgba(15, 20, 30, 0.8); border: 1px solid rgba(230, 36, 41, 0.4);
+    color: var(--text-main); font-family: var(--font-heading); font-size: 0.7rem;
+    letter-spacing: 1px; padding: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center;
+  }
+  .protocol-btn:hover {
+    background: var(--stark-red); border-color: var(--stark-gold);
+    box-shadow: 0 0 15px rgba(230, 36, 41, 0.6); color: #FFF;
+  }
+
+  /* ---------- FOOTER STATUS STRIP ---------- */
+  footer.stark-footer {
+    background: rgba(8, 12, 18, 0.95); border: 1px solid rgba(255, 215, 0, 0.2);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+    font-family: var(--font-code); font-size: 0.72rem; color: var(--text-muted);
+  }
+  .foot-left span { color: var(--stark-gold); margin-right: 14px; }
+  .foot-right { color: var(--arc-cyan); }
+</style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="hex-overlay"></div>
+  <div class="scanline"></div>
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="app-container">
+
+    <!-- TOP HEADER -->
+    <header class="stark-header">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 100 100">
+            <polygon points="50,5 95,27 95,73 50,95 5,73 5,27" fill="none" stroke="#FFD700" stroke-width="4"/>
+            <circle cx="50" cy="50" r="22" fill="none" stroke="#00F0FF" stroke-width="3"/>
+            <polygon points="50,20 76,65 24,65" fill="none" stroke="#E62429" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>STARK INDUSTRIES</h1>
+          <span>GLOBAL DEFENSE // ARC TERMINAL MARK LXXXV</span>
+        </div>
+      </div>
+
+      <div class="header-telemetry">
+        <div class="tele-item">
+          <div class="status-indicator"></div>
+          <span>J.A.R.V.I.S.: <span class="val">ONLINE v8.5</span></span>
+        </div>
+        <div class="tele-item">
+          <span>ARC CORE: <span class="val" id="headCoreVal">3.42 TW</span></span>
+        </div>
+        <div class="tele-item">
+          <span>REPULSORS: <span class="val" id="headRepVal">99.8% READY</span></span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-stark" id="btnAudioToggle" title="Toggle Web Audio SFX">
+          <span id="audioIcon">🔊</span> SOUND FX
+        </button>
+        <button class="btn-stark" id="btnVoiceSynth">
+          🎙️ J.A.R.V.I.S. VOICE
+        </button>
+        <button class="btn-stark" id="btnHouseParty" style="border-color:var(--stark-red); color:var(--stark-red-glow);">
+          ⚡ OVERDRIVE
+        </button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD VIEWPORT -->
+    <main class="stark-viewport">
+
+      <!-- LEFT COLUMN: SUIT TELEMETRY & VAULT -->
+      <section class="panel-box">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🛡️ STARK ARMOR VAULT</span>
+          </div>
+          <span style="font-family:var(--font-code); font-size:0.65rem; color:var(--arc-cyan)">SUIT MATRIX</span>
+        </div>
+
+        <div class="panel-body">
+          <div class="suit-card-selector">
+            <button class="suit-btn" data-suit="mk3">
+              <div class="suit-tag">MARK III</div>
+              <div class="suit-name">GOLD-TITANIUM</div>
+            </button>
+            <button class="suit-btn" data-suit="mk42">
+              <div class="suit-tag">MARK XLII</div>
+              <div class="suit-name">PRODIGAL SON</div>
+            </button>
+            <button class="suit-btn" data-suit="mk50">
+              <div class="suit-tag">MARK L</div>
+              <div class="suit-name">BLEEDING EDGE</div>
+            </button>
+            <button class="suit-btn active" data-suit="mk85">
+              <div class="suit-tag">MARK LXXXV</div>
+              <div class="suit-name">NANO APEX</div>
+            </button>
+          </div>
+
+          <div class="suit-wireframe-container">
+            <canvas id="suitCanvas"></canvas>
+            <div style="position:absolute; top:8px; left:8px; font-family:var(--font-code); font-size:0.6rem; color:var(--stark-gold);">
+              MODEL: <span id="wireframeModelTag">MARK LXXXV</span>
+            </div>
+          </div>
+
+          <div class="suit-spec-display">
+            <div class="spec-bar-group">
+              <div class="spec-label">
+                <span>ARMOR DENSITY (NANO MATRIX)</span>
+                <span class="val" id="valArmor">99.4%</span>
+              </div>
+              <div class="progress-bg"><div class="progress-fill" id="barArmor" style="width: 99.4%;"></div></div>
+            </div>
+
+            <div class="spec-bar-group">
+              <div class="spec-label">
+                <span>ARC REACTOR DIRECT OUTPUT</span>
+                <span class="val" id="valPower">4.20 TW</span>
+              </div>
+              <div class="progress-bg"><div class="progress-fill" id="barPower" style="width: 95%;"></div></div>
+            </div>
+
+            <div class="spec-bar-group">
+              <div class="spec-label">
+                <span>REPULSOR CANNON BATTERY</span>
+                <span class="val" id="valRepulsor">100%</span>
+              </div>
+              <div class="progress-bg"><div class="progress-fill" id="barRepulsor" style="width: 100%;"></div></div>
+            </div>
+
+            <div class="spec-bar-group">
+              <div class="spec-label">
+                <span>FLIGHT THRUSTER VELOCITY</span>
+                <span class="val" id="valSpeed">MACH 12.4</span>
+              </div>
+              <div class="progress-bg"><div class="progress-fill" id="barSpeed" style="width: 92%;"></div></div>
+            </div>
+          </div>
+
+          <button class="btn-stark" id="btnAssembleNano" style="width:100%; justify-content:center;">
+            ⚙️ INITIATE NANOTECH DEPLOYMENT
+          </button>
+        </div>
+      </section>
+
+      <!-- CENTER COLUMN: DYNAMIC 3D ARC REACTOR & BIOMETRIC AUTH -->
+      <section class="center-stage">
+
+        <div class="arc-core-view panel-box">
+          <div class="hud-reticle">
+            <div class="hud-circle c1"></div>
+            <div class="hud-circle c2"></div>
+            <div class="hud-circle c3"></div>
+          </div>
+
+          <canvas id="arcReactorCanvas" width="340" height="340" title="Click or Drag to pulse Arc Core!"></canvas>
+
+          <div class="arc-status-badge">
+            ARC CORE OUTPUT: <span id="arcPowerOutput">3,420 GW</span>
+          </div>
+        </div>
+
+        <div class="auth-control-panel">
+          <!-- Biometric Palm Scanner -->
+          <div class="palm-scanner-box" id="palmScanner">
+            <div class="laser-beam"></div>
+            <div class="palm-icon">
+              <svg viewBox="0 0 100 120">
+                <circle cx="50" cy="55" r="16" fill="none" stroke="#FFD700" stroke-width="2"/>
+                <circle cx="50" cy="55" r="8" fill="#00F0FF"/>
+                <path d="M25,110 L25,65 Q25,50 35,40 L35,20 Q35,15 40,15 Q45,15 45,20 L45,35 L50,15 Q50,10 55,10 Q60,10 60,15 L60,35 L65,20 Q65,15 70,15 Q75,15 75,20 L75,40 L80,30 Q80,25 85,25 Q90,25 90,30 L80,70 Q75,110 50,110 Z"/>
+              </svg>
+            </div>
+            <div class="scanner-hint" id="palmStatus">PRESS & HOLD PALM TO AUTHENTICATE</div>
+          </div>
+
+          <!-- Master Keycode Override Terminal -->
+          <div class="keypad-terminal">
+            <div class="passcode-display" id="passDisplay">••••••••</div>
+            <div class="keypad-grid">
+              <button class="key-btn" data-key="1">1</button>
+              <button class="key-btn" data-key="2">2</button>
+              <button class="key-btn" data-key="3">3</button>
+              <button class="key-btn" data-key="4">4</button>
+              <button class="key-btn" data-key="5">5</button>
+              <button class="key-btn" data-key="6">6</button>
+              <button class="key-btn" data-key="7">7</button>
+              <button class="key-btn" data-key="8">8</button>
+              <button class="key-btn" data-key="9">9</button>
+              <button class="key-btn" data-key="CLR" style="color:var(--stark-red)">CLR</button>
+              <button class="key-btn" data-key="0">0</button>
+              <button class="key-btn" data-key="ENT" style="color:var(--stark-gold)">ENT</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT COLUMN: J.A.R.V.I.S. TELEMETRY & TACTICAL RADAR -->
+      <section class="panel-box">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📡 DEFENSE RADAR & J.A.R.V.I.S.</span>
+          </div>
+          <span style="font-family:var(--font-code); font-size:0.65rem; color:var(--stark-red-glow)">TACTICAL GRID</span>
+        </div>
+
+        <div class="panel-body">
+          <div class="radar-container">
+            <canvas id="radarCanvas"></canvas>
+            <div style="position:absolute; top:6px; left:8px; font-family:var(--font-code); font-size:0.6rem; color:var(--arc-cyan);">
+              SATELLITE: STARK-SAT-09
+            </div>
+            <div style="position:absolute; bottom:6px; right:8px; font-family:var(--font-code); font-size:0.6rem; color:var(--stark-gold);">
+              TARGETS: <span id="radarTargetCount">0 DETECTED</span>
+            </div>
+          </div>
+
+          <div class="jarvis-log-box" id="jarvisConsole">
+            <div class="log-entry sys">[SYSTEM]: INITIALIZING STARK ACCESS TERMINAL...</div>
+            <div class="log-entry jarvis">[J.A.R.V.I.S.]: Good day, Sir. Arc Reactor core at 99.8% efficiency.</div>
+            <div class="log-entry sys">[SECURITY]: Defense grid online. Biometric scanner standing by.</div>
+          </div>
+
+          <div class="command-row">
+            <input type="text" class="cmd-input" id="cmdInput" placeholder="Command J.A.R.V.I.S. (e.g. veronica, house party)..." />
+            <button class="btn-stark" id="btnCmdSend">RUN</button>
+          </div>
+
+          <div class="protocol-grid">
+            <button class="protocol-btn" id="protoHouseParty">⚡ HOUSE PARTY</button>
+            <button class="protocol-btn" id="protoVeronica">🛡️ VERONICA</button>
+            <button class="protocol-btn" id="protoHulkbuster">💥 HULKBUSTER</button>
+            <button class="protocol-btn" id="protoOverride">🔓 MASTER OVERRIDE</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="stark-footer">
+      <div class="foot-left">
+        <span>SECURITY CLEARANCE: LEVEL 10 (ALPHA-STARK)</span>
+        <span>LOCATION: MALIBU HQ / TOWER O1</span>
+      </div>
+      <div class="foot-right">
+        STARK INDUSTRIES SYSTEM ARCHITECTURE // ALL RIGHTS RESERVED
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    /* 1. WEB AUDIO SYNTHESIZER ENGINE */
+    class StarkAudioEngine {
+      constructor() { this.ctx = null; this.enabled = true; }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playRepulsorBeep(freq = 880, duration = 0.12, type = 'sine') {
+        if (!this.enabled) return; this.init(); if (!this.ctx) return;
+        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.4, this.ctx.currentTime + duration);
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + duration);
+      }
+      playArcPulse() {
+        if (!this.enabled) return; this.init(); if (!this.ctx) return;
+        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.6);
+      }
+      playScanSweep() {
+        if (!this.enabled) return; this.init(); if (!this.ctx) return;
+        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(1200, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.3);
+      }
+      playAccessGranted() {
+        if (!this.enabled) return; this.init(); if (!this.ctx) return;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          setTimeout(() => this.playRepulsorBeep(freq, 0.25, 'triangle'), idx * 100);
+        });
+      }
+      playAlarmSiren() {
+        if (!this.enabled) return; this.init(); if (!this.ctx) return;
+        const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(800, this.ctx.currentTime + 0.25);
+        osc.frequency.linearRampToValueAtTime(400, this.ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.5);
+      }
+    }
+    const audio = new StarkAudioEngine();
+
+    /* 2. J.A.R.V.I.S. VOICE SYNTHESIS & CONSOLE */
+    function speakJARVIS(text) {
+      logJARVIS('[J.A.R.V.I.S.]: ' + text, 'jarvis');
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.rate = 1.0; msg.pitch = 0.9;
+        const voices = window.speechSynthesis.getVoices();
+        const jarvisVoice = voices.find(v => v.name.includes('David') || v.name.includes('Male') || v.name.includes('Daniel')) || voices[0];
+        if (jarvisVoice) msg.voice = jarvisVoice;
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function logJARVIS(text, type = 'sys') {
+      const consoleBox = document.getElementById('jarvisConsole');
+      const div = document.createElement('div');
+      div.className = `log-entry ${type}`;
+      div.textContent = text;
+      consoleBox.appendChild(div);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    /* 3. HTML5 CANVAS 3D INTERACTIVE ARC REACTOR ENGINE */
+    const arcCanvas = document.getElementById('arcReactorCanvas');
+    const arcCtx = arcCanvas.getContext('2d');
+    let arcAngle = 0; let arcSpeed = 0.02; let pulseCoreScale = 1.0;
+
+    function renderArcReactor() {
+      const w = arcCanvas.width; const h = arcCanvas.height;
+      const cx = w / 2; const cy = h / 2;
+      arcCtx.clearRect(0, 0, w, h);
+
+      arcCtx.save(); arcCtx.translate(cx, cy);
+      arcCtx.beginPath(); arcCtx.arc(0, 0, 140, 0, Math.PI * 2);
+      arcCtx.strokeStyle = 'rgba(255, 215, 0, 0.4)'; arcCtx.lineWidth = 4; arcCtx.stroke();
+
+      const coilCount = 10;
+      for (let i = 0; i < coilCount; i++) {
+        const a = (Math.PI * 2 / coilCount) * i + arcAngle;
+        const x = Math.cos(a) * 125; const y = Math.sin(a) * 125;
+        arcCtx.save(); arcCtx.translate(x, y); arcCtx.rotate(a + Math.PI / 2);
+        arcCtx.fillStyle = '#E62429'; arcCtx.fillRect(-8, -12, 16, 24);
+        arcCtx.strokeStyle = '#FFD700'; arcCtx.strokeRect(-8, -12, 16, 24);
+        arcCtx.fillStyle = '#FFD700'; arcCtx.fillRect(-5, -8, 10, 16);
+        arcCtx.restore();
+      }
+
+      arcCtx.rotate(-arcAngle * 1.5);
+      arcCtx.beginPath(); arcCtx.arc(0, 0, 95, 0, Math.PI * 2);
+      arcCtx.strokeStyle = '#00F0FF'; arcCtx.lineWidth = 8;
+      arcCtx.shadowColor = '#00F0FF'; arcCtx.shadowBlur = 20; arcCtx.stroke(); arcCtx.shadowBlur = 0;
+
+      arcCtx.rotate(arcAngle * 2.5);
+      arcCtx.beginPath();
+      const tRadius = 60 * pulseCoreScale;
+      for (let i = 0; i < 3; i++) {
+        const ta = (Math.PI * 2 / 3) * i - Math.PI / 2;
+        const tx = Math.cos(ta) * tRadius; const ty = Math.sin(ta) * tRadius;
+        if (i === 0) arcCtx.moveTo(tx, ty); else arcCtx.lineTo(tx, ty);
+      }
+      arcCtx.closePath();
+      arcCtx.strokeStyle = '#FFD700'; arcCtx.lineWidth = 5;
+      arcCtx.shadowColor = '#FFD700'; arcCtx.shadowBlur = 15; arcCtx.stroke();
+
+      const coreGrad = arcCtx.createRadialGradient(0, 0, 5, 0, 0, 50 * pulseCoreScale);
+      coreGrad.addColorStop(0, '#FFFFFF'); coreGrad.addColorStop(0.3, '#80FFFF');
+      coreGrad.addColorStop(0.7, '#00F0FF'); coreGrad.addColorStop(1, 'transparent');
+
+      arcCtx.fillStyle = coreGrad; arcCtx.beginPath(); arcCtx.arc(0, 0, 50 * pulseCoreScale, 0, Math.PI * 2); arcCtx.fill();
+      arcCtx.restore();
+
+      pulseCoreScale += (1.0 - pulseCoreScale) * 0.1;
+      arcAngle += arcSpeed;
+      requestAnimationFrame(renderArcReactor);
+    }
+    renderArcReactor();
+
+    arcCanvas.addEventListener('click', () => {
+      pulseCoreScale = 1.35; audio.playArcPulse();
+      const currentPower = Math.floor(3400 + Math.random() * 800);
+      document.getElementById('arcPowerOutput').textContent = `${currentPower} GW`;
+      logJARVIS(`[ARC CORE]: Power spike registered at ${currentPower} GW!`, 'sys');
+    });
+
+    /* 4. ARMOR VAULT & WIREFRAME RENDERER */
+    const suitsData = {
+      mk3: { name: 'MARK III', tag: 'GOLD-TITANIUM', armor: 85, power: 75, repulsor: 80, speed: 70, speedText: 'MACH 3.5' },
+      mk42: { name: 'MARK XLII', tag: 'PRODIGAL SON', armor: 90, power: 88, repulsor: 92, speed: 85, speedText: 'MACH 8.0' },
+      mk50: { name: 'MARK L', tag: 'BLEEDING EDGE', armor: 98, power: 96, repulsor: 98, speed: 95, speedText: 'MACH 10.2' },
+      mk85: { name: 'MARK LXXXV', tag: 'NANO APEX', armor: 99.4, power: 99, repulsor: 100, speed: 98, speedText: 'MACH 12.4' }
+    };
+
+    const suitCanvas = document.getElementById('suitCanvas');
+    const suitCtx = suitCanvas.getContext('2d');
+    let suitRotAngle = 0; let currentSuitKey = 'mk85';
+
+    function resizeSuitCanvas() { suitCanvas.width = suitCanvas.clientWidth; suitCanvas.height = suitCanvas.clientHeight; }
+    window.addEventListener('resize', resizeSuitCanvas); resizeSuitCanvas();
+
+    function renderSuitWireframe() {
+      const w = suitCanvas.width; const h = suitCanvas.height;
+      if (!w || !h) return; suitCtx.clearRect(0, 0, w, h);
+
+      suitCtx.save(); suitCtx.translate(w / 2, h / 2 + 10);
+      suitCtx.beginPath(); suitCtx.ellipse(0, 50, 60, 20, 0, 0, Math.PI * 2);
+      suitCtx.strokeStyle = 'rgba(0, 240, 255, 0.3)'; suitCtx.lineWidth = 1; suitCtx.stroke();
+
+      const rot = Math.sin(suitRotAngle) * 0.8; suitCtx.scale(Math.cos(rot), 1);
+
+      suitCtx.strokeStyle = currentSuitKey === 'mk85' ? '#FFD700' : '#00F0FF';
+      suitCtx.lineWidth = 2; suitCtx.beginPath(); suitCtx.rect(-15, -60, 30, 25);
+      suitCtx.fillStyle = '#00F0FF'; suitCtx.fillRect(-10, -50, 20, 3); suitCtx.stroke();
+
+      suitCtx.beginPath(); suitCtx.moveTo(-35, -30); suitCtx.lineTo(35, -30);
+      suitCtx.lineTo(25, 10); suitCtx.lineTo(-25, 10); suitCtx.closePath();
+      suitCtx.strokeStyle = '#E62429'; suitCtx.stroke();
+
+      suitCtx.beginPath(); suitCtx.arc(0, -10, 8, 0, Math.PI * 2);
+      suitCtx.fillStyle = '#00F0FF'; suitCtx.fill(); suitCtx.stroke();
+
+      suitCtx.beginPath(); suitCtx.rect(-20, 10, 16, 40); suitCtx.rect(4, 10, 16, 40);
+      suitCtx.strokeStyle = '#FFD700'; suitCtx.stroke();
+      suitCtx.restore();
+
+      suitRotAngle += 0.02; requestAnimationFrame(renderSuitWireframe);
+    }
+    renderSuitWireframe();
+
+    document.querySelectorAll('.suit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        audio.playRepulsorBeep(600, 0.1);
+        document.querySelectorAll('.suit-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const key = btn.dataset.suit; currentSuitKey = key; const data = suitsData[key];
+        document.getElementById('wireframeModelTag').textContent = data.name;
+        document.getElementById('valArmor').textContent = data.armor + '%';
+        document.getElementById('barArmor').style.width = data.armor + '%';
+        document.getElementById('valPower').textContent = data.power + ' TW';
+        document.getElementById('barPower').style.width = data.power + '%';
+        document.getElementById('valRepulsor').textContent = data.repulsor + '%';
+        document.getElementById('barRepulsor').style.width = data.repulsor + '%';
+        document.getElementById('valSpeed').textContent = data.speedText;
+        document.getElementById('barSpeed').style.width = data.speed + '%';
+
+        logJARVIS(`[ARMOR VAULT]: Telemetry scan online for ${data.name}.`, 'sys');
+      });
+    });
+
+    document.getElementById('btnAssembleNano').addEventListener('click', () => {
+      audio.playScanSweep();
+      logJARVIS(`[NANOTECH]: Deploying ${suitsData[currentSuitKey].name} nanotech matrix...`, 'jarvis');
+      speakJARVIS(`Nanotech assembly sequence active for ${suitsData[currentSuitKey].name}.`);
+    });
+
+    /* 5. BIOMETRIC SCANNER & KEYPAD TERMINAL LOGIC */
+    const palmScanner = document.getElementById('palmScanner');
+    let scanTimer = null;
+
+    palmScanner.addEventListener('mousedown', startPalmScan);
+    palmScanner.addEventListener('touchstart', (e) => { e.preventDefault(); startPalmScan(); });
+    window.addEventListener('mouseup', cancelPalmScan);
+    window.addEventListener('touchend', cancelPalmScan);
+
+    function startPalmScan() {
+      audio.playScanSweep(); palmScanner.classList.add('scanning');
+      document.getElementById('palmStatus').textContent = 'SCANNING IN PROGRESS...';
+      document.getElementById('palmStatus').style.color = 'var(--stark-gold)';
+
+      scanTimer = setTimeout(() => {
+        audio.playAccessGranted(); palmScanner.classList.remove('scanning');
+        document.getElementById('palmStatus').textContent = 'IDENTITY CONFIRMED: TONY STARK';
+        document.getElementById('palmStatus').style.color = 'var(--success)';
+        logJARVIS('[BIOMETRICS]: Palm identity verified. Clearance Alpha-1 granted.', 'sys');
+        speakJARVIS('Biometrics verified. Welcome back, Mr. Stark.');
+      }, 1400);
+    }
+
+    function cancelPalmScan() {
+      if (scanTimer) {
+        clearTimeout(scanTimer); scanTimer = null; palmScanner.classList.remove('scanning');
+        if (!document.getElementById('palmStatus').textContent.includes('CONFIRMED')) {
+          document.getElementById('palmStatus').textContent = 'PRESS & HOLD PALM TO AUTHENTICATE';
+          document.getElementById('palmStatus').style.color = 'var(--stark-gold)';
+        }
+      }
+    }
+
+    let enteredCode = '';
+    document.querySelectorAll('.key-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        audio.playRepulsorBeep(1000, 0.08); const key = btn.dataset.key;
+        const display = document.getElementById('passDisplay');
+
+        if (key === 'CLR') { enteredCode = ''; display.textContent = '••••••••'; }
+        else if (key === 'ENT') {
+          if (enteredCode === '100868' || enteredCode === '85' || enteredCode.length >= 4) {
+            audio.playAccessGranted(); display.textContent = 'ACCESS GRANTED'; display.style.color = 'var(--success)';
+            logJARVIS('[SECURITY]: Keycode override verified. STARK MASTER clearance active.', 'sys');
+            speakJARVIS('Master security code accepted.');
+          } else {
+            audio.playAlarmSiren(); display.textContent = 'DENIED'; display.style.color = 'var(--danger)';
+            setTimeout(() => { display.textContent = '••••••••'; display.style.color = 'var(--stark-gold)'; enteredCode = ''; }, 1200);
+          }
+        } else {
+          if (enteredCode.length < 8) { enteredCode += key; display.textContent = '*'.repeat(enteredCode.length); }
+        }
+      });
+    });
+
+    /* 6. DEFENSE RADAR */
+    const radarCanvas = document.getElementById('radarCanvas');
+    const radarCtx = radarCanvas.getContext('2d');
+    let radarBeamAngle = 0;
+    const radarTargets = [{ x: 0.35, y: 0.3 }, { x: 0.7, y: 0.6 }];
+
+    function resizeRadarCanvas() { radarCanvas.width = radarCanvas.clientWidth; radarCanvas.height = radarCanvas.clientHeight; }
+    window.addEventListener('resize', resizeRadarCanvas); resizeRadarCanvas();
+
+    function renderRadar() {
+      const w = radarCanvas.width; const h = radarCanvas.height; const cx = w / 2; const cy = h / 2; const maxR = Math.min(cx, cy) - 10;
+      radarCtx.clearRect(0, 0, w, h);
+      radarCtx.strokeStyle = 'rgba(0, 240, 255, 0.2)'; radarCtx.lineWidth = 1;
+
+      for (let r = maxR; r > 0; r -= maxR / 3) {
+        radarCtx.beginPath(); radarCtx.arc(cx, cy, r, 0, Math.PI * 2); radarCtx.stroke();
+      }
+
+      radarCtx.beginPath(); radarCtx.moveTo(cx - maxR, cy); radarCtx.lineTo(cx + maxR, cy);
+      radarCtx.moveTo(cx, cy - maxR); radarCtx.lineTo(cx, cy + maxR); radarCtx.stroke();
+
+      radarCtx.save(); radarCtx.translate(cx, cy); radarCtx.rotate(radarBeamAngle);
+      radarCtx.beginPath(); radarCtx.moveTo(0, 0); radarCtx.arc(0, 0, maxR, -0.4, 0); radarCtx.closePath();
+      radarCtx.fillStyle = 'rgba(0, 240, 255, 0.15)'; radarCtx.fill();
+      radarCtx.beginPath(); radarCtx.moveTo(0, 0); radarCtx.lineTo(maxR, 0);
+      radarCtx.strokeStyle = '#00F0FF'; radarCtx.lineWidth = 2; radarCtx.stroke(); radarCtx.restore();
+
+      radarTargets.forEach(t => {
+        const tx = t.x * w; const ty = t.y * h;
+        radarCtx.fillStyle = '#E62429'; radarCtx.beginPath(); radarCtx.arc(tx, ty, 4, 0, Math.PI * 2); radarCtx.fill();
+        radarCtx.strokeStyle = '#FFD700'; radarCtx.strokeRect(tx - 7, ty - 7, 14, 14);
+      });
+
+      document.getElementById('radarTargetCount').textContent = `${radarTargets.length} SECURE OBJECTS`;
+      radarBeamAngle += 0.03; requestAnimationFrame(renderRadar);
+    }
+    renderRadar();
+
+    /* 7. AMBIENT PARTICLES */
+    const pCanvas = document.getElementById('particleCanvas');
+    const pCtx = pCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeParticles() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeParticles); resizeParticles();
+
+    for (let i = 0; i < 45; i++) {
+      particles.push({
+        x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+        radius: Math.random() * 2 + 1, color: Math.random() > 0.4 ? 'rgba(0, 240, 255, ' : 'rgba(255, 215, 0, ',
+        alpha: Math.random() * 0.6 + 0.2, vy: - (Math.random() * 0.5 + 0.2)
+      });
+    }
+
+    function renderParticles() {
+      pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+      particles.forEach(p => {
+        p.y += p.vy; if (p.y < -10) { p.y = pCanvas.height + 10; p.x = Math.random() * pCanvas.width; }
+        pCtx.fillStyle = p.color + p.alpha + ')'; pCtx.beginPath(); pCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); pCtx.fill();
+      });
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    /* 8. COMMAND LINE & PROTOCOL MACROS */
+    const cmdInput = document.getElementById('cmdInput');
+    const btnCmdSend = document.getElementById('btnCmdSend');
+
+    function executeCommand(cmdStr) {
+      if (!cmdStr) return; const cmd = cmdStr.trim().toLowerCase();
+      logJARVIS(`> ${cmdStr}`, 'sys'); audio.playRepulsorBeep(950, 0.1);
+
+      if (cmd.includes('house party') || cmd.includes('protocol')) triggerHouseParty();
+      else if (cmd.includes('veronica')) triggerVeronica();
+      else if (cmd.includes('hulkbuster')) triggerHulkbuster();
+      else if (cmd.includes('override')) {
+        audio.playAccessGranted(); logJARVIS('[J.A.R.V.I.S.]: Master clearance override granted, Sir.', 'jarvis');
+        speakJARVIS('Master security override engaged.');
+      } else {
+        logJARVIS(`[J.A.R.V.I.S.]: Executing custom routine: "${cmdStr}"`, 'jarvis');
+        speakJARVIS(`Executing custom routine: ${cmdStr}`);
+      }
+      cmdInput.value = '';
+    }
+
+    btnCmdSend.addEventListener('click', () => executeCommand(cmdInput.value));
+    cmdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') executeCommand(cmdInput.value); });
+
+    document.getElementById('protoHouseParty').addEventListener('click', triggerHouseParty);
+    document.getElementById('protoVeronica').addEventListener('click', triggerVeronica);
+    document.getElementById('protoHulkbuster').addEventListener('click', triggerHulkbuster);
+    document.getElementById('protoOverride').addEventListener('click', () => {
+      audio.playAccessGranted(); logJARVIS('[SECURITY]: Level 10 Clearance Confirmed.', 'sys'); speakJARVIS('Clearance confirmed.');
+    });
+
+    function triggerHouseParty() {
+      audio.playAlarmSiren(); pulseCoreScale = 1.6;
+      logJARVIS('[PROTOCOL]: HOUSE PARTY PROTOCOL ACTIVATED!', 'warn');
+      speakJARVIS('House Party Protocol initiated. Deploying all automated iron suits.');
+    }
+
+    function triggerVeronica() {
+      audio.playScanSweep(); logJARVIS('[VERONICA]: Satellite trajectory locked over target coordinates.', 'jarvis');
+      speakJARVIS('Veronica orbital module positioned and ready for drop.');
+    }
+
+    function triggerHulkbuster() {
+      audio.playArcPulse(); logJARVIS('[DEFENSE]: Mark 44 Hulkbuster armor module armed!', 'warn');
+      speakJARVIS('Hulkbuster containment armor online.');
+    }
+
+    document.getElementById('btnAudioToggle').addEventListener('click', function() {
+      audio.enabled = !audio.enabled;
+      document.getElementById('audioIcon').textContent = audio.enabled ? '🔊' : '🔇';
+      this.classList.toggle('active', audio.enabled);
+    });
+
+    document.getElementById('btnVoiceSynth').addEventListener('click', () => {
+      speakJARVIS('Stark Industries Access Terminal operating at peak efficiency.');
+    });
+
+    document.getElementById('btnHouseParty').addEventListener('click', triggerHouseParty);
+  </script>
+</body>
+</html>
