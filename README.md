@@ -26,7 +26,6 @@ The project recreates a high-tech Iron Man-style dashboard featuring an **Arc Re
 ### 🦾 Stark Armor Vault
 
 Select between multiple armor configurations:
-
 | Armor      | Designation   | Armor | Power | Repulsor |     Speed |
 | ---------- | ------------- | ----: | ----: | -------: | --------: |
 | Mark III   | Gold-Titanium |   85% |   75% |      80% |  Mach 3.5 |
