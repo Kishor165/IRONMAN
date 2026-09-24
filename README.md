@@ -37,7 +37,6 @@ The armor telemetry updates dynamically when a different suit is selected.
 ---
 
 ## 🤖 J.A.R.V.I.S. Console
-
 The interface includes an interactive command console capable of processing commands such as:
 
 ```text
