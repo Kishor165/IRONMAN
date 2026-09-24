@@ -13,7 +13,6 @@ The project recreates a high-tech Iron Man-style dashboard featuring an **Arc Re
 > Add your project screenshot as `preview.png` in the root of the repository.
 
 ---
-
 ## ✨ Features
 
 ### ⚡ ARC Reactor Core
