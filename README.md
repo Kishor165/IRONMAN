@@ -24,7 +24,6 @@ The project recreates a high-tech Iron Man-style dashboard featuring an **Arc Re
 * Futuristic HUD targeting rings
 
 ### 🦾 Stark Armor Vault
-
 Select between multiple armor configurations:
 | Armor      | Designation   | Armor | Power | Repulsor |     Speed |
 | ---------- | ------------- | ----: | ----: | -------: | --------: |
