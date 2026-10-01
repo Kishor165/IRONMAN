@@ -7,7 +7,6 @@ The project recreates a high-tech Iron Man-style dashboard featuring an **Arc Re
 
 ---
 ## 🖥️ Preview
-
 <p align="center">
   <img src="preview.png" alt="Stark Industries ARC Access Terminal" width="100%">
 </p>
