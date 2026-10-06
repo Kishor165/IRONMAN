@@ -16,6 +16,7 @@ The project recreates a high-tech Iron Man-style dashboard featuring an **Arc Re
 
 ---
 ## ✨ Features
+
 ### ⚡ ARC Reactor Core
 
 * Interactive animated Arc Reactor
