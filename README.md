@@ -351,7 +351,6 @@ B.Tech — Artificial Intelligence & Data Science
 Focused on **Java Full Stack Development, React, Spring Boot, and interactive web applications**.
 
 ### Connect
-
 [![GitHub](https://img.shields.io/badge/GitHub-Kishor165-181717?style=for-the-badge\&logo=github)](https://github.com/Kishor165)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Kishor%20Kumar-0A66C2?style=for-the-badge\&logo=linkedin)](https://linkedin.com/in/kishorkumar28)
