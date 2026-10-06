@@ -107,7 +107,6 @@ The radar is rendered using the **HTML5 Canvas API**.
 ---
 
 ## 🔊 Web Audio System
-
 The project includes a custom JavaScript audio engine using the **Web Audio API**.
 
 Different interactions generate different synthesized sounds:
