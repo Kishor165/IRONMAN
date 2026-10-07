@@ -49,7 +49,6 @@ J.A.R.V.I.S. responds through:
 * Audio feedback
 * Protocol activation
 * System status messages
-
 ---
 
 ## 🔐 Security System
