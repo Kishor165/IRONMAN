@@ -120,7 +120,6 @@ Voice output is triggered by system events and user commands.
 ---
 
 ## 🎨 UI & Visual Design
-
 The interface combines a futuristic military/HUD aesthetic with Stark-inspired colors.
 
 ### Color System
