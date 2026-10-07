@@ -68,7 +68,6 @@ IDENTITY CONFIRMED
 ```
 
 ### Master Keypad
-
 The terminal includes a functional numeric keypad with:
 
 * `CLR` — Clear input
