@@ -151,7 +151,6 @@ The UI also includes:
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge\&logo=javascript\&logoColor=black)
 
 ### APIs & Browser Technologies
-
 * HTML5 Canvas
 * Web Audio API
 * Speech Synthesis API
