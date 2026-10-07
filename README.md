@@ -160,7 +160,6 @@ The UI also includes:
 * CSS Custom Properties
 
 ### Fonts
-
 * **Orbitron**
 * **Rajdhani**
 * **Share Tech Mono**
