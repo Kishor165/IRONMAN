@@ -44,7 +44,6 @@ override
 ```
 
 J.A.R.V.I.S. responds through:
-
 * Animated console logs
 * Browser voice synthesis
 * Audio feedback
