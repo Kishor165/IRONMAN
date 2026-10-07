@@ -107,7 +107,6 @@ Audio can be enabled or disabled using the **SOUND FX** control.
 ---
 
 ## 🎙️ J.A.R.V.I.S. Voice
-
 The interface uses the browser's **Speech Synthesis API** to provide voice responses.
 
 Example:
