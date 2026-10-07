@@ -31,11 +31,9 @@ Select between multiple armor configurations:
 | Mark LXXXV | Nano Apex     | 99.4% |   99% |     100% | Mach 12.4 |
 
 The armor telemetry updates dynamically when a different suit is selected.
-
 ---
 
 ## 🤖 J.A.R.V.I.S. Console
-
 The interface includes an interactive command console capable of processing commands such as:
 
 ```text
