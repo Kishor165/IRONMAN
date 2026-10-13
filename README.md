@@ -11,7 +11,6 @@ The project recreates a high-tech Iron Man-style dashboard featuring an **Arc Re
 </p>
 
 > Add your project screenshot as `preview.png` in the root of the repository.
-
 ---
 
 ## ✨ Features
