@@ -62,6 +62,7 @@ J.A.R.V.I.S. responds through:
 ## 🔐 Security System
 
 ### Biometric Palm Scanner
+
 Hold the palm scanner to initiate authentication.
 
 The interface simulates:
