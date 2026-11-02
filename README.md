@@ -335,7 +335,6 @@ Possible future upgrades:
 ## ⚠️ Disclaimer
 
 This is a **fan-made fictional interface inspired by the visual style and technology concepts associated with Iron Man and Stark Industries**.
-
 It is created for **educational, experimental, and frontend development purposes** and is not affiliated with Marvel, Disney, or any official Stark Industries production.
 
 ---
