@@ -91,6 +91,7 @@ The terminal includes a functional numeric keypad with:
 ---
 
 ## 📡 Tactical Defense Radar
+
 A real-time animated radar interface displays:
 
 * Rotating radar sweep
